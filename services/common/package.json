@@ -1,0 +1,22 @@
+{
+  "name": "@ecommerce-backend/common",
+  "version": "1.0.0",
+  "description": "Shared utilities for Ecommerce Backend microservices",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "tsc",
+    "clean": "rm -rf dist"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "kafkajs": "^2.2.4",
+    "winston": "^3.8.2"
+  },
+  "devDependencies": {
+    "@types/node": "^18.11.18",
+    "typescript": "^4.9.4"
+  }
+}

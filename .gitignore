@@ -1,0 +1,93 @@
+# Node modules
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# Build output
+dist/
+build/
+coverage/
+.out/
+
+# TypeScript
+*.tsbuildinfo
+
+# Environment variables
+.env
+.env.local
+.env.*.local
+.env.development.local
+.env.production.local
+
+# Docker
+*.pid
+docker-data/
+docker-compose.override.yml
+
+# Logs
+logs/
+*.log
+log/
+debug.log
+pids/
+*.pid
+*.seed
+*.pid.lock
+
+# OS-generated files
+.DS_Store
+Thumbs.db
+
+# IDE specific files
+.vscode/
+.idea/
+
+# Temporary files
+tmp/
+temp/
+*.tmp
+*.swp
+*.swo
+
+# Cache directories
+.cache/
+.eslintcache
+.parcel-cache/
+.next/
+.nuxt/
+storybook-static/
+turbo/
+bun.lockb
+
+# Jest
+coverage/
+jest-html-reporters-*/
+
+# Redis dump
+dump.rdb
+
+# MongoDB
+*.lock
+mongod.lock
+
+# Local services files
+uploads/
+public/uploads/
+
+# Prisma
+.prisma/
+
+# PM2 files
+.pids
+*.seed
+
+# Logs & reports
+*.out
+*.err
+reports/
+
+# Misc
+*.bak
+*.orig
