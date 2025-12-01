@@ -1,9 +1,10 @@
 import { Request, Response, NextFunction } from 'express';
+import { AuthService } from '../services/auth.service';
 
 export const register = async (req: Request, res: Response, next: NextFunction) => {
     try {
-        // TODO: Implement registration logic
-        res.status(201).json({ message: 'Register endpoint' });
+        const result = await AuthService.register(req.body);
+        res.status(201).json(result);
     } catch (error) {
         next(error);
     }
@@ -11,8 +12,8 @@ export const register = async (req: Request, res: Response, next: NextFunction) 
 
 export const login = async (req: Request, res: Response, next: NextFunction) => {
     try {
-        // TODO: Implement login logic
-        res.status(200).json({ message: 'Login endpoint' });
+        const result = await AuthService.login(req.body);
+        res.status(200).json(result);
     } catch (error) {
         next(error);
     }
@@ -20,8 +21,9 @@ export const login = async (req: Request, res: Response, next: NextFunction) => 
 
 export const refresh = async (req: Request, res: Response, next: NextFunction) => {
     try {
-        // TODO: Implement refresh logic
-        res.status(200).json({ message: 'Refresh endpoint' });
+        const { refreshToken } = req.body;
+        const result = await AuthService.refresh(refreshToken);
+        res.status(200).json(result);
     } catch (error) {
         next(error);
     }

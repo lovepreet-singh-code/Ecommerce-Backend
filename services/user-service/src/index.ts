@@ -1,54 +1,36 @@
-import express from 'express';
-import cors from 'cors';
-import helmet from 'helmet';
-import morgan from 'morgan';
-import dotenv from 'dotenv';
-import { logger, loadEnv, NotFoundError, ApiError } from '@ecommerce-backend/common';
-import { authRoutes } from './routes/auth.routes';
-import { userRoutes } from './routes/user.routes';
+import * as dotenv from 'dotenv';
+import { logger, loadEnv } from '@ecommerce-backend/common';
+import { connectDB } from './db';
+import { app } from './app';
 
 dotenv.config();
 
-try {
-    loadEnv(['PORT', 'MONGO_URI', 'JWT_SECRET']);
-} catch (error) {
-    logger.error(error);
-    process.exit(1);
-}
+// Main startup function
+const startServer = async () => {
+    try {
+        // Validate environment variables
+        loadEnv(['PORT', 'MONGO_URI', 'JWT_SECRET']);
 
-const app = express();
+        // Connect to database
+        await connectDB();
 
-app.use(helmet());
-app.use(cors());
-app.use(morgan('dev'));
-app.use(express.json());
+        // Start the server
+        const PORT = process.env.PORT || 4000;
 
-// Routes
-app.use('/auth', authRoutes);
-app.use('/users', userRoutes);
-
-// Health check
-app.get('/health', (req, res) => {
-    res.status(200).json({ status: 'UP', service: 'user-service' });
-});
-
-// 404 Handler
-app.all('*', (req, res, next) => {
-    next(new NotFoundError('Route not found'));
-});
-
-// Global Error Handler
-app.use((err: Error, req: express.Request, res: express.Response, next: express.NextFunction) => {
-    if (err instanceof ApiError) {
-        return res.status(err.statusCode).json({ message: err.message });
+        app.listen(PORT, () => {
+            logger.info(`✅ User Service listening on port ${PORT}`);
+        });
+    } catch (error) {
+        logger.error('❌ Failed to start server:', error);
+        process.exit(1);
     }
+};
 
-    logger.error(err);
-    res.status(500).json({ message: 'Internal Server Error' });
+// Handle unhandled promise rejections
+process.on('unhandledRejection', (reason, promise) => {
+    logger.error('Unhandled Rejection at:', promise, 'reason:', reason);
+    process.exit(1);
 });
 
-const PORT = process.env.PORT || 4000;
-
-app.listen(PORT, () => {
-    logger.info(`User Service listening on port ${PORT}`);
-});
+// Start the server
+startServer();
