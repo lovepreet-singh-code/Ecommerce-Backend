@@ -1,0 +1,325 @@
+{
+    "info": {
+        "name": "E-Commerce Backend",
+        "description": "Microservices-based e-commerce platform API collection",
+        "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+    },
+    "variable": [
+        {
+            "key": "order_service_url",
+            "value": "http://localhost:3000"
+        },
+        {
+            "key": "payment_service_url",
+            "value": "http://localhost:3001"
+        },
+        {
+            "key": "notification_service_url",
+            "value": "http://localhost:3002"
+        },
+        {
+            "key": "review_service_url",
+            "value": "http://localhost:3003"
+        },
+        {
+            "key": "search_service_url",
+            "value": "http://localhost:3004"
+        },
+        {
+            "key": "user_id",
+            "value": "user-123"
+        },
+        {
+            "key": "order_id",
+            "value": ""
+        },
+        {
+            "key": "transaction_id",
+            "value": ""
+        }
+    ],
+    "item": [
+        {
+            "name": "Orders",
+            "item": [
+                {
+                    "name": "Create Order",
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "exec": [
+                                    "if (pm.response.code === 201) {",
+                                    "    const response = pm.response.json();",
+                                    "    pm.collectionVariables.set('order_id', response.id);",
+                                    "}"
+                                ]
+                            }
+                        }
+                    ],
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n  \"items\": [\n    {\n      \"productId\": \"prod-123\",\n      \"quantity\": 2,\n      \"price\": 20\n    }\n  ]\n}"
+                        },
+                        "url": {
+                            "raw": "{{order_service_url}}/api/v1/orders",
+                            "host": [
+                                "{{order_service_url}}"
+                            ],
+                            "path": [
+                                "api",
+                                "v1",
+                                "orders"
+                            ]
+                        }
+                    }
+                },
+                {
+                    "name": "Get Order",
+                    "request": {
+                        "method": "GET",
+                        "url": {
+                            "raw": "{{order_service_url}}/api/v1/orders/{{order_id}}",
+                            "host": [
+                                "{{order_service_url}}"
+                            ],
+                            "path": [
+                                "api",
+                                "v1",
+                                "orders",
+                                "{{order_id}}"
+                            ]
+                        }
+                    }
+                },
+                {
+                    "name": "Update Order Status",
+                    "request": {
+                        "method": "PATCH",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n  \"status\": \"shipped\"\n}"
+                        },
+                        "url": {
+                            "raw": "{{order_service_url}}/api/v1/orders/{{order_id}}/status",
+                            "host": [
+                                "{{order_service_url}}"
+                            ],
+                            "path": [
+                                "api",
+                                "v1",
+                                "orders",
+                                "{{order_id}}",
+                                "status"
+                            ]
+                        }
+                    }
+                }
+            ]
+        },
+        {
+            "name": "Payments",
+            "item": [
+                {
+                    "name": "Create Payment",
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "exec": [
+                                    "if (pm.response.code === 201) {",
+                                    "    const response = pm.response.json();",
+                                    "    pm.collectionVariables.set('transaction_id', response.transactionId);",
+                                    "}"
+                                ]
+                            }
+                        }
+                    ],
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n  \"orderId\": \"{{order_id}}\",\n  \"amount\": 40,\n  \"currency\": \"USD\",\n  \"paymentMethod\": \"card\"\n}"
+                        },
+                        "url": {
+                            "raw": "{{payment_service_url}}/api/v1/payments",
+                            "host": [
+                                "{{payment_service_url}}"
+                            ],
+                            "path": [
+                                "api",
+                                "v1",
+                                "payments"
+                            ]
+                        }
+                    }
+                },
+                {
+                    "name": "Payment Webhook (Success)",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n  \"transactionId\": \"{{transaction_id}}\",\n  \"status\": \"success\"\n}"
+                        },
+                        "url": {
+                            "raw": "{{payment_service_url}}/api/v1/payments/webhook",
+                            "host": [
+                                "{{payment_service_url}}"
+                            ],
+                            "path": [
+                                "api",
+                                "v1",
+                                "payments",
+                                "webhook"
+                            ]
+                        }
+                    }
+                }
+            ]
+        },
+        {
+            "name": "Notifications",
+            "item": [
+                {
+                    "name": "Get User Notifications",
+                    "request": {
+                        "method": "GET",
+                        "url": {
+                            "raw": "{{notification_service_url}}/api/v1/notifications/user/{{user_id}}?limit=10",
+                            "host": [
+                                "{{notification_service_url}}"
+                            ],
+                            "path": [
+                                "api",
+                                "v1",
+                                "notifications",
+                                "user",
+                                "{{user_id}}"
+                            ],
+                            "query": [
+                                {
+                                    "key": "limit",
+                                    "value": "10"
+                                }
+                            ]
+                        }
+                    }
+                }
+            ]
+        },
+        {
+            "name": "Reviews",
+            "item": [
+                {
+                    "name": "Create Review",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            },
+                            {
+                                "key": "x-user-id",
+                                "value": "{{user_id}}"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n  \"productId\": \"prod-123\",\n  \"rating\": 5,\n  \"comment\": \"Great product! Highly recommended.\"\n}"
+                        },
+                        "url": {
+                            "raw": "{{review_service_url}}/api/v1/reviews",
+                            "host": [
+                                "{{review_service_url}}"
+                            ],
+                            "path": [
+                                "api",
+                                "v1",
+                                "reviews"
+                            ]
+                        }
+                    }
+                },
+                {
+                    "name": "Get Product Reviews",
+                    "request": {
+                        "method": "GET",
+                        "url": {
+                            "raw": "{{review_service_url}}/api/v1/reviews/product/prod-123",
+                            "host": [
+                                "{{review_service_url}}"
+                            ],
+                            "path": [
+                                "api",
+                                "v1",
+                                "reviews",
+                                "product",
+                                "prod-123"
+                            ]
+                        }
+                    }
+                }
+            ]
+        },
+        {
+            "name": "Search",
+            "item": [
+                {
+                    "name": "Search Products",
+                    "request": {
+                        "method": "GET",
+                        "url": {
+                            "raw": "{{search_service_url}}/api/v1/search?q=laptop&limit=10",
+                            "host": [
+                                "{{search_service_url}}"
+                            ],
+                            "path": [
+                                "api",
+                                "v1",
+                                "search"
+                            ],
+                            "query": [
+                                {
+                                    "key": "q",
+                                    "value": "laptop"
+                                },
+                                {
+                                    "key": "limit",
+                                    "value": "10"
+                                }
+                            ]
+                        }
+                    }
+                }
+            ]
+        }
+    ]
+}
